@@ -1,16 +1,19 @@
+import numpy as np
+
 class ProblemSpecification:
     '''A description of the parameters of the problem to be solved'''
     # By setting a all variables in the constructor with the _ prefix to the variable names, it is indicated that these variables shouldn't be accessed from outside this file. They are accessed through the properties instead. This effectively makes instances of this class immutable as the internal variables should not be changed but may be retrieved.
-    def __init__(self, betas, reactivity_driving, generation_time, lambdas, source, feedback_fuel, reference_temperature_fuel, feedback_coolant, reference_temperature_coolant, energy_fission, heat_capacity_fuel, total_height, heat_transfer_coefficient, thermal_conductivity_fuel, heat_capacity_coolant, speed_coolant, inlet_temperature_coolant):
+    def __init__(self, n_z, betas, reactivity_driving, generation_time, lambdas, source, feedback_fuel, temperature_zero, feedback_coolant, reference_temperature_coolant, energy_fission, heat_capacity_fuel, total_height, heat_transfer_coefficient, thermal_conductivity_fuel, heat_capacity_coolant, speed_coolant, inlet_temperature_coolant):
         '''Constructs the data for the problem specification
         self -- The instance of ProblemSpecification being constructed (ProblemSpecification)
+        n_z -- The number of discretisations of the system (int)
         betas -- The delayed neutron fractions of the delayed neutron precursor groups (np.array[float])
         reactivity_driving -- The driving reactivity ($ as a function of time in s)(ReactivityFunction)
         generation_time -- The generation time (s) (float)
         lambdas -- The decay rates of the delayed neutron precursor groups (1/s)(np.array[float])
         source -- The strength of the neutron source (1/s) (float)
         feedback_fuel -- The reactivity feedback coefficient for the fuel ($/K)(float)
-        reference_temperature_fuel -- The reference temperature for the fuel (K)(float)
+        temperature_zero -- The reference temperature for the system (K)(float)
         feedback_coolant -- The feedback coefficient for the coolant temperature ($/K)(float)
         reference_temperature_coolant -- The reference temperature for the coolant (K)(float)
         energy_fission -- The energy released by a fission (J)
@@ -24,6 +27,9 @@ class ProblemSpecification:
         '''
 
         # Set various values in the problem specification and calculate other values that are based on them
+        self._n_z = n_z
+        self._d_z = total_height / n_z
+        self._heights = np.array([self._dz * (i + 0.5 for i in range(n_z))])
         self._betas = betas
         self._beta = sum(betas)
         self._reactivity_driving = reactivity_driving
@@ -31,9 +37,8 @@ class ProblemSpecification:
         self._lambdas = lambdas
         self._source = source
         self._feedback_fuel = feedback_fuel
-        self._reference_temperature_fuel = reference_temperature_fuel
+        self._temperature_zero = temperature_zero
         self._feedback_coolant = feedback_coolant
-        self._reference_temperature_coolant = reference_temperature_coolant
         self._energy_fission = energy_fission
         self._heat_capacity_fuel = heat_capacity_fuel
         self._total_height = total_height
@@ -41,7 +46,27 @@ class ProblemSpecification:
         self._thermal_conductivity_fuel = thermal_conductivity_fuel
         self._heat_capacity_coolant = heat_capacity_coolant
         self._speed_coolant = speed_coolant
-        self._inlet_temperature_coolant = inlet_temperature_coolant
+
+    @property
+    def n_z(self):
+        ''' Returns the number of vertical discretisations 
+        self -- The problem specification the value is being returned from (ProblemSpecification)
+        [return] -- The number of vertical discretisations (int)'''
+        return(self._n_z)
+
+    @property
+    def d_z(self):
+        ''' Returns the height of a single vertical discretisation 
+        self -- The problem specification the value is being returned from (ProblemSpecification)
+        [return] -- The height of a single vertical discretisation  (float)'''
+        return(self._d_z)
+
+    @property
+    def heights(self):
+        ''' Returns the middle heights for each vertical discretisation
+        self -- The problem specification the value is being returned from (ProblemSpecification)
+        [return] -- The middle heights for each vertical discretisation (np.array[float])'''
+        return(self._betas)
 
     @property
     def betas(self):
@@ -93,10 +118,10 @@ class ProblemSpecification:
         return(self._feedback_fuel)
 
     @property
-    def reference_temperature_fuel(self):
-        ''' Returns the reference temperature for the fuel temperature feedback
+    def temperature_zero(self):
+        ''' Returns the reference temperature for the system
         self -- The problem specification the value is being returned from (ProblemSpecification)
-        [return] -- The reference temperature for the fuel temperature feedback ($/K)(float)'''
+        [return] -- The reference temperature for the system (K)(float)'''
         return(self._reference_temperature_fuel)
 
     @property
@@ -105,13 +130,6 @@ class ProblemSpecification:
         self -- The problem specification the value is being returned from (ProblemSpecification)
         [return] -- The temperature feedback for the coolant ($/K)(float)'''
         return(self._feedback_coolant)
-
-    @property
-    def reference_temperature_coolant(self):
-        ''' Returns the reference temperature for the coolant temperature feedback
-        self -- The problem specification the value is being returned from (ProblemSpecification)
-        [return] -- The reference temperature for the coolant temperature feedback ($/K)(float)'''
-        return(self._reference_temperature_coolant)
 
     @property
     def energy_fission(self):
@@ -161,11 +179,4 @@ class ProblemSpecification:
         self -- The problem specification the value is being returned from (ProblemSpecification)
         [return] -- The speed of the coolant (m/s)(float)'''
         return(self._speed_coolant)
-
-    @property
-    def inlet_temperature_coolant(self):
-        ''' Returns the inlet temperature of the coolant
-        self -- The problem specification the value is being returned from (ProblemSpecification)
-        [return] -- The inlet temperature of the coolant (K)(float)'''
-        return(self._inlet_temperature_coolant)
         

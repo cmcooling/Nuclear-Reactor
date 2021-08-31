@@ -1,0 +1,25 @@
+n_delayed 6
+delayed_fraction_1 0.0003
+delayed_decay_rate_1 0.03
+delayed_fraction_2 0.001
+delayed_decay_rate_2 0.03
+delayed_fraction_3 0.001
+delayed_decay_rate_3 0.1
+delayed_fraction_4 0.003
+delayed_decay_rate_4 0.3
+delayed_fraction_5 0.001
+delayed_decay_rate_5 1
+delayed_fraction_6 0.0003
+delayed_decay_rate_6 10
+
+source 100
+feedback_fuel -2e-4
+feedback_coolant -2e-4
+energy_fission 3.2e-11
+heat_capacity_fuel 1e7
+total_height 4
+heat_transfer_coefficient 100
+thermal_conductivity_fuel 27
+heat_capacity_coolant 1e7
+speed_coolant 5
+temperature_zero 300
