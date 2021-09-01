@@ -23,3 +23,5 @@ thermal_conductivity_fuel 27
 heat_capacity_coolant 1e7
 speed_coolant 5
 temperature_zero 300
+
+reactivity ramp 1 2 0 1

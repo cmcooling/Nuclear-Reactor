@@ -1,22 +1,54 @@
 import numpy as np
+from constant_reactivity import ConstantReactivity
+from ramp_reactivity import RampReactivity
 
 def get_value(split_lines, identifier, return_type):
     '''Attempts to find a single line which begins with the identifier and returns the following value. Lines with only one word will be ignored. If more than one line has this identifier the first value will be selected
     lines -- The lines of the input split into individual words ([[String]])
     identifier -- The identifier which is being searched for (String)
-    return_type -- The type the returned value should have (Type)
-    default -- The default value to be returned'''
+    return_type -- The type the returned value should have (Type)'''
 
+    # Check each line
     for line in split_lines:
+        # If the line isn't long enough, progress to the next
         if len(line) < 2:
             continue
+        # If the line begins with the identifier, try to return the value as the specified type
         if line[0] == identifier:
             try:
                 return  return_type(line[1])
+            # If the value doesn't exist or can't be converted move to the next one
             except (ValueError, IndexError):
                 continue
     else:
         raise (ValueError("The input did not contain a specification of the value '" + identifier + "'"))
+
+def get_reactivity(split_lines, identifier):
+    '''Attempts to find a single line which begins with the identifier which specifies a reactivity profile and the constructs that profile.
+    lines -- The lines of the input split into individual words ([[String]])
+    identifier -- The identifier which is being searched for (String)'''
+
+    # Check each line
+    for line in split_lines:
+        # If the line isn't long enough, progress to the next
+        if len(line) < 3:
+            continue
+        if line[0] == identifier:
+            # If the line begins with the identifier, check what type of reactivity profile is being created and create it
+            if line[1] == "constant":
+                try:
+                    return ConstantReactivity(float(line[2]))
+                except (ValueError):
+                    # If the value can't be converted then move on to the next line move on to the next line
+                    continue
+            elif line[1] == "ramp":
+                try:
+                    return RampReactivity(float(line[2]), float(line[3]), float(line[4]), float(line[5]))
+                except (IndexError, ValueError):
+                    # If the value doesn't exist on the line or can't be converted to a real move on to the next line
+                    continue
+    else:
+        raise(ValueError("The input did not contain a specification for the reactivity."))
 
 def read_input(file_path):
     '''Reads the an input file from a specified path, reads it, extracts the relevant values and populates an instance of ProblemSpecification
@@ -54,3 +86,4 @@ def read_input(file_path):
     heat_capacity_coolant = get_value(split_lines, "heat_capacity_coolant", float)
     speed_coolant = get_value(split_lines, "speed_coolant", float)
     temperature_zero = get_value(split_lines, "temperature_zero", float)
+    reactivity = get_reactivity(split_lines, "reactivity")
