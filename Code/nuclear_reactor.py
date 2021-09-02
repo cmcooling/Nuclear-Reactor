@@ -1,3 +1,6 @@
 from input_reader import read_input
+from state import State
 
-probelm_specification = read_input("Inputs/sample_input1.txt")
+problem_specification = read_input("Inputs/sample_input1.txt")
+
+initial_state = State(problem_specification, 0)

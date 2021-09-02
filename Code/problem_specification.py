@@ -30,6 +30,7 @@ class ProblemSpecification:
         self._d_z = total_height / n_z
         self._heights = np.array([self._d_z * i + 0.5 for i in range(n_z)])
         self._betas = betas
+        self._n_delayed = len(self._betas)
         self._beta = sum(betas)
         self._reactivity_driving = reactivity_driving
         self._generation_time = generation_time
@@ -45,6 +46,8 @@ class ProblemSpecification:
         self._thermal_conductivity_fuel = thermal_conductivity_fuel
         self._heat_capacity_coolant = heat_capacity_coolant
         self._speed_coolant = speed_coolant
+
+        self._n_state_variables = 2 * n_z + self._n_delayed + 1
 
     @property
     def n_z(self):
@@ -80,6 +83,13 @@ class ProblemSpecification:
         self -- The problem specification the value is being returned from (ProblemSpecification)
         [return] -- The total delayed neutron precursor fraction (float)'''
         return(self._betas)
+
+    @property
+    def n_delayed(self):
+        ''' Returns the number of delayed neutron precursor groups
+        self -- The problem specification the value is being returned from (ProblemSpecification)
+        [return] -- The number of delayed neutron precursor groups (int)'''
+        return(self._n_delayed)
 
     def reactivity_driving(self, time):
         ''' Evaluates the driving reactivity at the specified time
@@ -178,4 +188,11 @@ class ProblemSpecification:
         self -- The problem specification the value is being returned from (ProblemSpecification)
         [return] -- The speed of the coolant (m/s)(float)'''
         return(self._speed_coolant)
+
+    @property
+    def n_state_variables(self):
+        ''' Returns the number of variables which are to be solved for in the state class
+        self -- The problem specification the value is being returned from (ProblemSpecification)
+        [return] -- The number of variables which are to be solved for in the state class (int)'''
+        return(self._n_state_variables)
         
