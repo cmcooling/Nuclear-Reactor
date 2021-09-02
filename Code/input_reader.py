@@ -1,6 +1,7 @@
 import numpy as np
 from constant_reactivity import ConstantReactivity
 from ramp_reactivity import RampReactivity
+from problem_specification import ProblemSpecification
 
 def get_value(split_lines, identifier, return_type):
     '''Attempts to find a single line which begins with the identifier and returns the following value. Lines with only one word will be ignored. If more than one line has this identifier the first value will be selected
@@ -75,7 +76,10 @@ def read_input(file_path):
         betas[i_delayed] = get_value(split_lines, "delayed_fraction_" + str(i_delayed + 1), float)
         lambdas[i_delayed] = get_value(split_lines, "delayed_decay_rate_" + str(i_delayed + 1), float)
 
+    # Get various other values from the input file
+    n_z = get_value(split_lines, "n_z", int)
     source = get_value(split_lines, "source", float)
+    generation_time = get_value(split_lines, "generation_time", float)
     feedback_fuel = get_value(split_lines, "feedback_fuel", float)
     feedback_coolant = get_value(split_lines, "feedback_coolant", float)
     energy_fission = get_value(split_lines, "energy_fission", float)
@@ -86,4 +90,7 @@ def read_input(file_path):
     heat_capacity_coolant = get_value(split_lines, "heat_capacity_coolant", float)
     speed_coolant = get_value(split_lines, "speed_coolant", float)
     temperature_zero = get_value(split_lines, "temperature_zero", float)
-    reactivity = get_reactivity(split_lines, "reactivity")
+    reactivity_driving = get_reactivity(split_lines, "reactivity")
+
+    # Make and return the problem specification
+    return ProblemSpecification(n_z, betas, reactivity_driving, generation_time, lambdas, source, feedback_fuel, temperature_zero, feedback_coolant, energy_fission, heat_capacity_fuel, total_height, heat_transfer_coefficient, thermal_conductivity_fuel, heat_capacity_coolant, speed_coolant)

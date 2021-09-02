@@ -3,7 +3,7 @@ import numpy as np
 class ProblemSpecification:
     '''A description of the parameters of the problem to be solved'''
     # By setting a all variables in the constructor with the _ prefix to the variable names, it is indicated that these variables shouldn't be accessed from outside this file. They are accessed through the properties instead. This effectively makes instances of this class immutable as the internal variables should not be changed but may be retrieved.
-    def __init__(self, n_z, betas, reactivity_driving, generation_time, lambdas, source, feedback_fuel, temperature_zero, feedback_coolant, reference_temperature_coolant, energy_fission, heat_capacity_fuel, total_height, heat_transfer_coefficient, thermal_conductivity_fuel, heat_capacity_coolant, speed_coolant, inlet_temperature_coolant):
+    def __init__(self, n_z, betas, reactivity_driving, generation_time, lambdas, source, feedback_fuel, temperature_zero, feedback_coolant, energy_fission, heat_capacity_fuel, total_height, heat_transfer_coefficient, thermal_conductivity_fuel, heat_capacity_coolant, speed_coolant):
         '''Constructs the data for the problem specification
         self -- The instance of ProblemSpecification being constructed (ProblemSpecification)
         n_z -- The number of discretisations of the system (int)
@@ -23,13 +23,12 @@ class ProblemSpecification:
         thermal_conductivity_fuel -- A constant related to the thermal conductivity of the fuel (m^2/s)(float)
         heat_capacity_coolant -- The absolute heat capacity of the coolant (W/K)(float)
         speed_coolant -- The speed of the coolant (m/s)(float)
-        inlet_temperature_coolant -- The temperature of the coolant at the inlet
         '''
 
         # Set various values in the problem specification and calculate other values that are based on them
         self._n_z = n_z
         self._d_z = total_height / n_z
-        self._heights = np.array([self._dz * (i + 0.5 for i in range(n_z))])
+        self._heights = np.array([self._d_z * i + 0.5 for i in range(n_z)])
         self._betas = betas
         self._beta = sum(betas)
         self._reactivity_driving = reactivity_driving
@@ -122,7 +121,7 @@ class ProblemSpecification:
         ''' Returns the reference temperature for the system
         self -- The problem specification the value is being returned from (ProblemSpecification)
         [return] -- The reference temperature for the system (K)(float)'''
-        return(self._reference_temperature_fuel)
+        return(self._temperature_zero)
 
     @property
     def feedback_coolant(self):

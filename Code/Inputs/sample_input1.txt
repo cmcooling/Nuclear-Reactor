@@ -1,3 +1,5 @@
+n_z 10
+
 n_delayed 6
 delayed_fraction_1 0.0003
 delayed_decay_rate_1 0.03
@@ -13,6 +15,7 @@ delayed_fraction_6 0.0003
 delayed_decay_rate_6 10
 
 source 100
+generation_time 1e-5
 feedback_fuel -2e-4
 feedback_coolant -2e-4
 energy_fission 3.2e-11
