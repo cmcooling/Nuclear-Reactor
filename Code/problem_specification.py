@@ -3,7 +3,7 @@ import numpy as np
 class ProblemSpecification:
     '''A description of the parameters of the problem to be solved'''
     # By setting a all variables in the constructor with the _ prefix to the variable names, it is indicated that these variables shouldn't be accessed from outside this file. They are accessed through the properties instead. This effectively makes instances of this class immutable as the internal variables should not be changed but may be retrieved.
-    def __init__(self, n_z, betas, reactivity_driving, generation_time, lambdas, source, feedback_fuel, temperature_zero, feedback_coolant, energy_fission, heat_capacity_fuel, total_height, heat_transfer_coefficient, thermal_conductivity_fuel, heat_capacity_coolant, speed_coolant):
+    def __init__(self, n_z, betas, reactivity_driving, generation_time, lambdas, source, feedback_fuel, temperature_zero, feedback_coolant, energy_fission, heat_capacity_fuel, total_height, heat_transfer_coefficient, thermal_conductivity_fuel, heat_capacity_coolant, speed_coolant, simulated_time, output_timestep):
         '''Constructs the data for the problem specification
         self -- The instance of ProblemSpecification being constructed (ProblemSpecification)
         n_z -- The number of discretisations of the system (int)
@@ -23,6 +23,8 @@ class ProblemSpecification:
         thermal_conductivity_fuel -- A constant related to the thermal conductivity of the fuel (m^2/s)(float)
         heat_capacity_coolant -- The absolute heat capacity of the coolant (W/K)(float)
         speed_coolant -- The speed of the coolant (m/s)(float)
+        simulated_time -- The time the reactor is to be simulated for (s)(float)
+        output_timestep -- The time the reactor is to be simulated for (s)(float)
         '''
 
         # Set various values in the problem specification and calculate other values that are based on them
@@ -48,6 +50,10 @@ class ProblemSpecification:
         self._speed_coolant = speed_coolant
 
         self._n_state_variables = 2 * n_z + self._n_delayed + 1
+
+        # Calculate the output times of the system
+        self._output_times = np.arange(0, simulated_time + output_timestep, output_timestep)
+        self._output_times[-1] = simulated_time
 
     @property
     def n_z(self):
@@ -196,3 +202,9 @@ class ProblemSpecification:
         [return] -- The number of variables which are to be solved for in the state class (int)'''
         return(self._n_state_variables)
         
+    @property
+    def output_times(self):
+        ''' Returns the output times of the system
+        self -- The problem specification the value is being returned from (ProblemSpecification)
+        [return] -- The times at which the state of the system will be recorded (np.array[float])'''
+        return(self._output_times)

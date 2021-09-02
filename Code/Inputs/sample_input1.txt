@@ -28,3 +28,6 @@ speed_coolant 5
 temperature_zero 300
 
 reactivity ramp 1 2 0 1
+
+simulated_time 100
+output_timestep 1.1
