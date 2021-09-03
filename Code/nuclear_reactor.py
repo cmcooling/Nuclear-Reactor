@@ -4,9 +4,13 @@ import numpy as np
 from future_states import calculate_future_states
 import matplotlib.pyplot as plt
 import os
+import sys
+
+# Get the input file path from the first command line argument
+input_file_path = sys.argv[1]
 
 # Read the input file to form a problem specification
-problem_specification = read_input("inputs/sample_input1.txt")
+problem_specification = read_input(input_file_path)
 
 # Set up the initial state
 initial_state = State(problem_specification, 0)
@@ -15,8 +19,6 @@ initial_state.t_coolant = np.full(problem_specification.n_z, problem_specificati
 
 # Find the other states of the system
 output_states = calculate_future_states(initial_state, problem_specification)
-
-
 
 # Make the output directory if it doesn't exist
 output_directory = os.path.join("outputs", problem_specification.simulation_name)
