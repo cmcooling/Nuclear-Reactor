@@ -12,12 +12,8 @@ def derivative(state_array, time, problem_specification):
     problem_specification -- The specification of the current physical system (ProblemSpecifcation)
     [return] -- The current rate of change of the different variables describing the state of the system (np.array[float])'''
 
-    #print("==========================")
-
     # Create the instance of State to hold the current state of the system
     state = State(problem_specification, time, state_array)
-
-    #print(state)
 
     # Create the instance of StateVariable to hold the current rate of change of the variables
     gradient = State_Variables(problem_specification, time)
@@ -54,9 +50,6 @@ def derivative(state_array, time, problem_specification):
     except IndexError:
         pass
     gradient.t_coolant[0] -= problem_specification.speed_coolant * (state.t_coolant[0] - problem_specification.temperature_zero) / problem_specification.d_z
-
-    #print("-------------------------")
-    #print(gradient)
 
     # Extract an array containing the gradient and return it
     return gradient.as_array

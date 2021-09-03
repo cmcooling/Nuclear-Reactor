@@ -16,5 +16,4 @@ def calculate_future_states(start_state, problem_specification):
     calculated_states = np.array([State(problem_specification, time, array) for array, time in zip(calculated_arrays, problem_specification.output_times)])
 
     return calculated_states
-
-    
+  
