@@ -3,7 +3,7 @@ import numpy as np
 class State_Variables():
     '''This class stores the state variables of the system at a particular time, or the rate of change of the corresponding values
     The data is stored in a public variables
-    Data may be converted to/from a single array where it is stored in the order "n_neutron - n_delayed - t_fuel - t_cool"'''
+    Data may be converted to/from a single array where it is stored in the order "n_neutron - n_delayed - t_fuel - t_coolant"'''
     def __init__(self, problem_specification, time=0, array=None):
         '''Constructs the state
         self - The instance of State being set up (State)
@@ -14,13 +14,14 @@ class State_Variables():
 
         self.time = time
 
-        if array !=None:
+        # Try to populate the state from array. If that's not possible, set everything to zero
+        try:
             self.populate_from_array(array)
-        else:
+        except TypeError:
             self.n_neutron = 0
             self.n_delayed = np.zeros(problem_specification.n_delayed)
             self.t_fuel = np.zeros(problem_specification.n_z)
-            self.t_cool = np.zeros(problem_specification.n_z)
+            self.t_coolant = np.zeros(problem_specification.n_z)
 
     def populate_from_array(self, array):
         '''Populates the state from the provided array
@@ -30,7 +31,7 @@ class State_Variables():
         self.n_neutron = array[0]
         self.n_delayed = array[1:self._problem_specification.n_delayed + 1]
         self.t_fuel = array[self._problem_specification.n_delayed + 1: self._problem_specification.n_delayed + self._problem_specification.n_z + 1]
-        self.t_cool = array[self._problem_specification.n_delayed + self._problem_specification.n_z + 1: self._problem_specification.n_delayed + 2 * self._problem_specification.n_z + 1]
+        self.t_coolant = array[self._problem_specification.n_delayed + self._problem_specification.n_z + 1: self._problem_specification.n_delayed + 2 * self._problem_specification.n_z + 1]
 
     @property
     def as_array(self):
@@ -43,7 +44,7 @@ class State_Variables():
         array[0] = self.n_neutron
         array[1:self._problem_specification.n_delayed + 1] = self.n_delayed
         array[self._problem_specification.n_delayed + 1: self._problem_specification.n_delayed + self._problem_specification.n_z + 1] = self.t_fuel
-        array[self._problem_specification.n_delayed + self._problem_specification.n_z + 1: self._problem_specification.n_delayed + 2 * self._problem_specification.n_z + 1] = self.t_cool
+        array[self._problem_specification.n_delayed + self._problem_specification.n_z + 1: self._problem_specification.n_delayed + 2 * self._problem_specification.n_z + 1] = self.t_coolant
 
         return(array)
 
@@ -57,6 +58,6 @@ class State_Variables():
         string += "Number of neutrons: {}\n".format(self.n_neutron)
         string += "Number of pre-cursors: {}\n".format(self.n_delayed)
         string += "Fuel temperature: {}\n".format(self.t_fuel)
-        string += "Coolant temperature: {}\n".format(self.t_cool)
+        string += "Coolant temperature: {}\n".format(self.t_coolant)
 
         return(string)

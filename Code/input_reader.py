@@ -89,11 +89,15 @@ def read_input(file_path):
     thermal_conductivity_fuel = get_value(split_lines, "thermal_conductivity_fuel", float)
     heat_capacity_coolant = get_value(split_lines, "heat_capacity_coolant", float)
     speed_coolant = get_value(split_lines, "speed_coolant", float)
+    extrapolation_distance_bottom = get_value(split_lines, "extrapolation_distance_bottom", float)
+    extrapolation_distance_top = get_value(split_lines, "extrapolation_distance_top", float)
     temperature_zero = get_value(split_lines, "temperature_zero", float)
     reactivity_driving = get_reactivity(split_lines, "reactivity")
 
     simulated_time = get_value(split_lines, "simulated_time", float)
     output_timestep = get_value(split_lines, "output_timestep", float)
 
+    simulation_name = get_value(split_lines, "simulation_name", str)
+
     # Make and return the problem specification
-    return ProblemSpecification(n_z, betas, reactivity_driving, generation_time, lambdas, source, feedback_fuel, temperature_zero, feedback_coolant, energy_fission, heat_capacity_fuel, total_height, heat_transfer_coefficient, thermal_conductivity_fuel, heat_capacity_coolant, speed_coolant, simulated_time, output_timestep)
+    return ProblemSpecification(n_z, betas, reactivity_driving, generation_time, lambdas, source, feedback_fuel, temperature_zero, feedback_coolant, energy_fission, heat_capacity_fuel, total_height, heat_transfer_coefficient, thermal_conductivity_fuel, heat_capacity_coolant, speed_coolant, extrapolation_distance_bottom, extrapolation_distance_top, simulated_time, output_timestep, simulation_name)

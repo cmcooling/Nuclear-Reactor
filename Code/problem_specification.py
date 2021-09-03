@@ -3,7 +3,7 @@ import numpy as np
 class ProblemSpecification:
     '''A description of the parameters of the problem to be solved'''
     # By setting a all variables in the constructor with the _ prefix to the variable names, it is indicated that these variables shouldn't be accessed from outside this file. They are accessed through the properties instead. This effectively makes instances of this class immutable as the internal variables should not be changed but may be retrieved.
-    def __init__(self, n_z, betas, reactivity_driving, generation_time, lambdas, source, feedback_fuel, temperature_zero, feedback_coolant, energy_fission, heat_capacity_fuel, total_height, heat_transfer_coefficient, thermal_conductivity_fuel, heat_capacity_coolant, speed_coolant, simulated_time, output_timestep):
+    def __init__(self, n_z, betas, reactivity_driving, generation_time, lambdas, source, feedback_fuel, temperature_zero, feedback_coolant, energy_fission, heat_capacity_fuel, total_height, heat_transfer_coefficient, thermal_conductivity_fuel, heat_capacity_coolant, speed_coolant, extrapolation_distance_bottom, extrapolation_distance_top, simulated_time, output_timestep, simulation_name):
         '''Constructs the data for the problem specification
         self -- The instance of ProblemSpecification being constructed (ProblemSpecification)
         n_z -- The number of discretisations of the system (int)
@@ -23,14 +23,17 @@ class ProblemSpecification:
         thermal_conductivity_fuel -- A constant related to the thermal conductivity of the fuel (m^2/s)(float)
         heat_capacity_coolant -- The absolute heat capacity of the coolant (W/K)(float)
         speed_coolant -- The speed of the coolant (m/s)(float)
+        extrapolation_distance_bottom -- The extrapolation distance for the power profile at the bottom of the reactor (m)(float)
+        extrapolation_distance_top -- The extrapolation distance for the power profile at the top of the reactor (m)(float)
         simulated_time -- The time the reactor is to be simulated for (s)(float)
         output_timestep -- The time the reactor is to be simulated for (s)(float)
+        simulation_name -- The name of the simulation (str)
         '''
 
         # Set various values in the problem specification and calculate other values that are based on them
         self._n_z = n_z
         self._d_z = total_height / n_z
-        self._heights = np.array([self._d_z * i + 0.5 for i in range(n_z)])
+        self._heights = np.array([self._d_z * (i + 0.5) for i in range(n_z)])
         self._betas = betas
         self._n_delayed = len(self._betas)
         self._beta = sum(betas)
@@ -48,12 +51,21 @@ class ProblemSpecification:
         self._thermal_conductivity_fuel = thermal_conductivity_fuel
         self._heat_capacity_coolant = heat_capacity_coolant
         self._speed_coolant = speed_coolant
+        self._simulation_name = simulation_name
 
         self._n_state_variables = 2 * n_z + self._n_delayed + 1
+
+        # Calculate the power profile of the system
+        self._power_profile = np.sin(np.pi * (extrapolation_distance_bottom + self.heights) / (total_height + extrapolation_distance_bottom + extrapolation_distance_top))
+        self._power_profile /= np.sum(self._power_profile)
 
         # Calculate the output times of the system
         self._output_times = np.arange(0, simulated_time + output_timestep, output_timestep)
         self._output_times[-1] = simulated_time
+
+        # Calculate the heat capacity per discretisation
+        self._heat_capacity_per_discretisation_fuel = heat_capacity_fuel / n_z
+        self._heat_capacity_per_discretisation_coolant = heat_capacity_coolant / n_z
 
     @property
     def n_z(self):
@@ -74,7 +86,7 @@ class ProblemSpecification:
         ''' Returns the middle heights for each vertical discretisation
         self -- The problem specification the value is being returned from (ProblemSpecification)
         [return] -- The middle heights for each vertical discretisation (np.array[float])'''
-        return(self._betas)
+        return(self._heights)
 
     @property
     def betas(self):
@@ -88,7 +100,7 @@ class ProblemSpecification:
         ''' Returns the total delayed neutron precursor fraction
         self -- The problem specification the value is being returned from (ProblemSpecification)
         [return] -- The total delayed neutron precursor fraction (float)'''
-        return(self._betas)
+        return(self._beta)
 
     @property
     def n_delayed(self):
@@ -123,7 +135,7 @@ class ProblemSpecification:
         ''' Returns the rate at which neutrons are added from the source
         self -- The problem specification the value is being returned from (ProblemSpecification)
         [return] -- The source strength (1/s)(float)'''
-        return(self._betas)
+        return(self._source)
 
     @property
     def feedback_fuel(self):
@@ -196,6 +208,27 @@ class ProblemSpecification:
         return(self._speed_coolant)
 
     @property
+    def power_profile(self):
+        ''' Returns the profile profile at each height present in heights
+        self -- The problem specification the value is being returned from (ProblemSpecification)
+        [return] -- The power profile (np.array[float])'''
+        return(self._power_profile)
+
+    @property
+    def heat_capacity_per_discretisation_fuel(self):
+        ''' Returns the absolute heat capacity of the fuel in a single discretised slice
+        self -- The problem specification the value is being returned from (ProblemSpecification)
+        [return] -- The absolute heat capacity of the fuel in a single discretised slice(J/K)(float)'''
+        return(self._heat_capacity_per_discretisation_fuel)
+
+    @property
+    def heat_capacity_per_discretisation_coolant(self):
+        ''' Returns the absolute heat capacity of the coolant in a single discretised slice
+        self -- The problem specification the value is being returned from (ProblemSpecification)
+        [return] -- The absolute heat capacity of the coolant in a single discretised slice(J/K)(float)'''
+        return(self._heat_capacity_per_discretisation_coolant)
+
+    @property
     def n_state_variables(self):
         ''' Returns the number of variables which are to be solved for in the state class
         self -- The problem specification the value is being returned from (ProblemSpecification)
@@ -208,3 +241,10 @@ class ProblemSpecification:
         self -- The problem specification the value is being returned from (ProblemSpecification)
         [return] -- The times at which the state of the system will be recorded (np.array[float])'''
         return(self._output_times)
+
+    @property
+    def simulation_name(self):
+        ''' Returns the name of this simulation
+        self -- The problem specification the value is being returned from (ProblemSpecification)
+        [return] -- The name of the simulation (str)'''
+        return(self._simulation_name)

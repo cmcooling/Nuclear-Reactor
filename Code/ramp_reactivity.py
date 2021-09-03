@@ -16,7 +16,7 @@ class RampReactivity():
         self._stop_time = stop_time
         self._start_reactivity = start_reactivity
         self._stop_reactivity = stop_reactivity
-        self._gradient = (stop_reactivity - start_reactivity) / (start_time - stop_time)
+        self._gradient = (stop_reactivity - start_reactivity) / (stop_time - start_time)
 
     def __call__(self, time):
         ''' Returns the reactivity at a given time 
