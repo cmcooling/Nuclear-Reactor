@@ -1,7 +1,7 @@
-from state_variables import State_Variables
+from state_variables import StateVariables
 import numpy as np
 
-class State(State_Variables):
+class State(StateVariables):
     ''''Represents a state of the system at a given time
     The main state variables are handled in the StatVariables class definition
     Other useful values are accessible through properties'''

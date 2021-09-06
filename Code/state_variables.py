@@ -1,6 +1,6 @@
 import numpy as np
 
-class State_Variables():
+class StateVariables():
     '''This class stores the state variables of the system at a particular time, or the rate of change of the corresponding values
     The data is stored in a public variables
     Data may be converted to/from a single array where it is stored in the order "n_neutron - n_delayed - t_fuel - t_coolant"'''

@@ -1,6 +1,5 @@
-from state_variables import State_Variables
+from state_variables import StateVariables
 from state import State
-from state_variables import State_Variables
 import numpy as np
 
 def derivative(state_array, time, problem_specification):
@@ -16,7 +15,7 @@ def derivative(state_array, time, problem_specification):
     state = State(problem_specification, time, state_array)
 
     # Create the instance of StateVariable to hold the current rate of change of the variables
-    gradient = State_Variables(problem_specification, time)
+    gradient = StateVariables(problem_specification, time)
 
     # Populate gradient using the equations which define how the system changes with time
     reactivity = state.driving_reactivity + state.fuel_reactivity + state.coolant_reactivity
@@ -36,9 +35,9 @@ def derivative(state_array, time, problem_specification):
     gradient.t_fuel -= (state.t_fuel - state.t_coolant) * problem_specification.heat_transfer_coefficient / problem_specification.heat_capacity_per_discretisation_fuel
     try:
         # The thermal diffusion term may raise an error if there are 2 or fewer discretisations, so put it in a try block
-        gradient.t_fuel[0] -= problem_specification.thermal_conductivity_fuel * (state.t_fuel[1] - state.t_fuel[0]) / problem_specification.heat_capacity_per_discretisation_fuel
-        gradient.t_fuel[-1] -= problem_specification.thermal_conductivity_fuel * (state.t_fuel[-2] - state.t_fuel[-1]) / problem_specification.heat_capacity_per_discretisation_fuel
-        gradient.t_fuel[1:-1] -= problem_specification.thermal_conductivity_fuel * (state.t_fuel[:-2] + state.t_fuel[2:] - 2 * state.t_fuel[1:-1]) / problem_specification.heat_capacity_per_discretisation_fuel
+        gradient.t_fuel[0] -= problem_specification.thermal_conductivity_fuel * (state.t_fuel[1] - state.t_fuel[0]) / (problem_specification.heat_capacity_per_discretisation_fuel * problem_specification.d_z ** 2)
+        gradient.t_fuel[-1] -= problem_specification.thermal_conductivity_fuel * (state.t_fuel[-2] - state.t_fuel[-1]) / (problem_specification.heat_capacity_per_discretisation_fuel * problem_specification.d_z ** 2)
+        gradient.t_fuel[1:-1] -= problem_specification.thermal_conductivity_fuel * (state.t_fuel[:-2] + state.t_fuel[2:] - 2 * state.t_fuel[1:-1]) / (problem_specification.heat_capacity_per_discretisation_fuel * problem_specification.d_z ** 2)
     except IndexError:
         pass
 
