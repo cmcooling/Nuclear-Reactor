@@ -51,3 +51,19 @@ The following files are found in the project:
 * You might be interested in the total energy created by the system. In this case dE/dt = P where E is the energy released and P is the power where E(t=0) = 0. Modify state_variables.py and derivative.py to add in this new variable and solve this new equation?
 * Add to "nuclea_reactor.py" to cause the reactivity as a function of time to be plotted. Extension: Produce a plot which has the different components of reactivity (driving, fuel temperature and coolant temeprature) as well as the total.
 * Add to "nuclear_reactor.py" so a plot is created which shows the fuel and coolant temperature profiles (i.e. the temepratures as a function of z) at the end of the simulation.
+
+## Citing this Project
+
+This project is distributed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode). As such, you may take inspiration from or it adapt it or aspects of it into non-commecial work as you wish. If you use a substantial portion of the content of this project (for example, to produce a research code), please reference this project in any journal papers, conference papers, ec to acknolwedge its use. A bibtex reference is provided below for convenience:
+
+```bibtex
+@misc{Cooling2021,
+  author = {Cooling, Chris},
+  title = {Nuclear-Reactor},
+  year = {2021},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/coolernato/Nuclear-Reactor}},
+  note = {Imperial College London Graduate School}
+}
+```
