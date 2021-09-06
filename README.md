@@ -16,6 +16,10 @@ The following key skills are used in this project:
 * Initial Value Problems
 * Matplotlib
 
+## Running the Code
+
+This project is designed to be run in the terminal from the "code" directory. The main file to run is "nuclear_reactor.py". It should be run with an additional command line argument to specify the path to the input file to be used. For example, to use the supplied input file, you might use the command "python nuclear_reactor.py inputs/sample_input1.txt" on Linux or Mac or "python nuclear_reactor.py inputs\sample_input1.txt" on Windows. The output will go to the directory specified by the "simulation_name" line of the input file. For example, "sample_input1.txt" has the line "simulation_name sample1" and so the output will be sent to outputs/sample1.
+
 ## Project Overview
 
 The following files are found in the project:
