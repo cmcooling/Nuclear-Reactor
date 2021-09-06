@@ -43,3 +43,11 @@ The following files are found in the project:
 * StateVairables is a class designed to hold the variables which are directly solved for by the Orindary Differential Equation (ODE) solver. It contains methods to populate it from an array or to populate an array using its data. This allows it to be used to conveniently store data in the "derivative" function for the rate of change of the function by accessing variables like "gradient.t_fuel", rather than having to work out which element of the array to alter. Once the "gradient" variable has been populated, an array can be created to be returned and used by "odeint".
 * State is a class which inherits from StateVariables and so also has this functionality, allowing data to be accessed from naturally-named variables like "state.n_neutron" in "derivative" once the "state" variable has been populated from the array passed in. It also contains a number of properties which calculate useful values of the current state.
 * "get_reactivity" and "get_value" contain some moderately complex logic including loop control, error handling and have a "for" loop with an "else" statement which is executed if the loop is not ended by a "break" or "return" statement.
+* "nuclear_reactor.py" uses "os.path.join" to form the path to the outputs - this gets the slashes the right way around in the path whichever Operating System is being used.
+
+## Exercises
+* Create an input file by copying "sample_input1.txt". Modify some input values and observe the change on the output.
+* Look at "input_reader.py" - change the reactivity profile to a constant value by modifying the input file.
+* You might be interested in the total energy created by the system. In this case dE/dt = P where E is the energy released and P is the power where E(t=0) = 0. Modify state_variables.py and derivative.py to add in this new variable and solve this new equation?
+* Add to "nuclea_reactor.py" to cause the reactivity as a function of time to be plotted. Extension: Produce a plot which has the different components of reactivity (driving, fuel temperature and coolant temeprature) as well as the total.
+* Add to "nuclear_reactor.py" so a plot is created which shows the fuel and coolant temperature profiles (i.e. the temepratures as a function of z) at the end of the simulation.
