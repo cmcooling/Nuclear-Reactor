@@ -44,7 +44,7 @@ The following files are found in the project:
 * State is a class which inherits from StateVariables and so also has this functionality, allowing data to be accessed from naturally-named variables like "state.n_neutron" in "derivative" once the "state" variable has been populated from the array passed in. It also contains a number of properties which calculate useful values of the current state.
 * "get_reactivity" and "get_value" contain some moderately complex logic including loop control, error handling and have a "for" loop with an "else" statement which is executed if the loop is not ended by a "break" or "return" statement.
 * "nuclear_reactor.py" uses "os.path.join" to form the path to the outputs - this gets the slashes the right way around in the path whichever Operating System is being used.
-* "derivative.py" uses a lot of Numpy functions to remove the need for loops and improve the speed of the code.
+* "derivative.py" uses a lot of Numpy functions and array operations to remove the need for loops and improve the speed of the code.
 
 ## Exercises
 * Create an input file by copying "sample_input1.txt". Modify some input values and observe the change on the output.
